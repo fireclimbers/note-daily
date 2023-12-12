@@ -134,6 +134,7 @@ export default function App() {
     });
 
     window.electron.ipcRenderer.on('ipc-load-dates', (arg) => {
+      //console.log(arg);
       setDateList(arg);
     });
 
@@ -217,13 +218,25 @@ export default function App() {
 
   // TODO find feature?
 
-  
+  function goUp() {
+    let d = stringToDate(dateList[2].days[0].d);
+    d.setDate(d.getDate()-7);
+    let s = dateToString(d);
+    window.electron.ipcRenderer.sendMessage('ipc-load-dates', s);
+  }  
 
+  function goDown() {
+    let d = stringToDate(dateList[2].days[0].d);
+    d.setDate(d.getDate()+7);
+    let s = dateToString(d);
+    window.electron.ipcRenderer.sendMessage('ipc-load-dates', s);
+  }  
   
 
   return(
     <Router>
       <aside className="sidebar menu" style={{backgroundColor: '#EBEDEF'}}>
+        <button onClick={goUp}>Prev</button><button onClick={goDown}>Next</button>
         {dateList.map((item,index) => {
           return [<p key={'title-'+index} className="menu-label">
             {item.title}
@@ -241,7 +254,6 @@ export default function App() {
             })}
           </ul>]
         })}
-
       </aside>
       <div className="body-text">
       <Routes>
